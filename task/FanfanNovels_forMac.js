@@ -130,7 +130,7 @@ function check_in() {
                     $.msg($.name, "❌签到失败, 请稍后再试", error, $.opts);
                 }
             } catch (error) {
-                $.msg($.name, "❌签到请求失败, 详情见日志", error, $.opts);
+                $.msg($.name, "❌签到请求失败, 你的Cookie过期啦, 请重新登录以获取Cookie. 报错详情见日志", error, $.opts);
                 console.log($.name + " ❌签到请求失败:\n" + error);
             }
             resolve();
