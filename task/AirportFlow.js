@@ -8,7 +8,7 @@
 3、请勿将此脚本用于任何商业或非法目的，若违反规定请自行对此负责。
 4、此脚本涉及应用与本人无关，本人对因此引起的任何隐私泄漏或其他后果不承担任何责任。
 5、本人对任何脚本引发的问题概不负责，包括但不限于由脚本错误引起的任何损失和损害。
-6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我将在收到认证文件确认后删除此脚本。
+6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
 7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
 ####################
 
@@ -27,11 +27,11 @@
 相关配置:
 
 [MITM]
-hostname = 自行填写Miaona!官网(9个字母+1个点)
+hotsname = 自行添加Miaona!的官网(9个字母+1个点的),此处不直接公开
 
 Loon
 [Script]
-cron "0 7 * * *" script-path=AirportFlow.js, tag=AirportFlow
+cron "0 7 * * *" script-path=AirportFlow.js, tag=AirportFlow.js
 
 Sruge
 [Script]
@@ -42,17 +42,20 @@ QuantumultX
 0 7 * * * AirportFlow.js, enabled=true
 */
 
-// 登录账号 引号内替换为登录账号 "yourEmail@example.com"
+// 登录账号 引号内替换为登录账号 改yourEmail@example.com
 const email = "yourEmail@example.com";
-// 登录密码 引号内替换为登录密码 "yourPassword"
+
+// 登录密码 引号内替换为登录密码 改yourPassword
 const pwd = "yourPassword";
 
 
 const $ = new Env("🐱for Miaona!");
-const date = new Date();
 
 
-$.opts = {'open-url': 'https://t.me/miaona233', 'media-url': 'https://i.pinimg.com/originals/e1/47/cc/e147cc317028e935119b3039a488348a.jpg'}
+$.opts = {
+        'open-url': 'https://t.me/miaona233',
+        'media-url': 'https://i.pinimg.com/originals/e1/47/cc/e147cc317028e935119b3039a488348a.jpg'
+    }
 
 
 !(async () => {
@@ -150,11 +153,20 @@ function get_flow(miaoCookie) {
             try {
                 if (resp.status == 200) {
                     var data = JSON.parse(data);
+                    if (data.data.expired_at != null) {
+                        var expired_at = data.data.expired_at * 1000;
+                        var dt = new Date(expired_at).toLocaleDateString("en-US")
+                        var tm = new Date(expired_at).toLocaleTimeString("en-US")
+                        var expired_time = "🎉 套餐到期时间: " + dt + " " + tm;
+                        console.log(expired_time);
+                    } else {
+                        var expired_time = "";
+                    }
                     var t = data.data.transfer_enable - data.data.d + data.data.u;
                     var flow = t > 1073741824 ? (t / 1024 / 1024 / 1024).toFixed(2) + " GB" : t > 1048576 ? (t / 1024 / 1024).toFixed(2) + " MB" : (t / 1024 / 1024).toFixed(2) + " KB";
-                    console.log(date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + "\n机场🐱剩余流量: " + flow);
-                    $.subt = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
-                    $.desc = "🌊剩余流量: " + flow;
+                    console.log("机场🐱剩余流量: " + flow + "\n" + expired_time);
+                    $.subt = "🌊 剩余流量: " + flow;
+                    $.desc = expired_time;
                     $.msg($.name, $.subt, $.desc, $.opts);
                 }
             } catch (error) {
