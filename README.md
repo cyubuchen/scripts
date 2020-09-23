@@ -2,21 +2,23 @@
 
 ![](https://img.shields.io/badge/License-GPL%20v3%2B-orange)
 ![](https://badgen.net/github/stars/cyubuchen/scripts)
-![](https://tokei.rs/b1/github/cyubuchen/scripts?category=code)
 
 ## 脚本
 
-|                             脚本                             |           功能           |                             预览                             |
-| :----------------------------------------------------------: | :----------------------: | :----------------------------------------------------------: |
-| [🔓解锁脚本](https://github.com/cyubuchen/scripts/tree/unlock) |     解锁（iOS/Mac）     | 🔓 |
-| [某机场流量查询](https://github.com/cyubuchen/scripts/blob/master/task/AirportFlow.js) | 自动登录查询机场剩余流量 | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/airportFlow.JPG"/></div> |
-| [饭饭文学-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js) |     自动签到获取金币     | <div align=center><img width="512" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovels.jpg"/></div><div align=center><img width="512" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsQX.jpg"/></div> |
-| [饭饭文学-Mac](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_forMac.js) |     自动签到获取金币     | <div align=center><img width="512" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsMac.png"/></div> |
-| [恩山论坛签到](https://github.com/cyubuchen/scripts/blob/master/task/enshanCheckin.js) |     自动签到获取金币     | <div align=center><img width=50% height=50% src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/enshanCheckin.jpg"/></div> |
+|                             脚本                             |            功能             |                             预览                             |
+| :----------------------------------------------------------: | :-------------------------: | :----------------------------------------------------------: |
+| [🔓解锁脚本](https://github.com/cyubuchen/scripts/tree/unlock) |       解锁（iOS/Mac）       |                              🔓                               |
+| [京东白条提额](https://github.com/cyubuchen/scripts/blob/master/task/jdBaiTiao.js) | 白条每日提额（京东金融App） | <div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/jdBaiTiao.JPEG"/></div> |
+| [某机场流量查询](https://github.com/cyubuchen/scripts/blob/master/task/AirportFlow.js) |  自动登录查询机场剩余流量   | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/airportFlow.JPG"/></div> |
+| [饭饭文学-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js) |      自动签到获取金币       | <div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovels.jpg"/></div><div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsQX.jpg"/></div> |
+| [饭饭文学-Mac](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_forMac.js) |      自动签到获取金币       | <div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsMac.png"/></div> |
+| [恩山论坛签到](https://github.com/cyubuchen/scripts/blob/master/task/enshanCheckin.js) |      自动签到获取金币       | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/enshanCheckin.jpg"/></div> |
 
 ## 致谢
 
 大部分脚本用到了@chavyleung 的 [Env.js](https://github.com/chavyleung/scripts/blob/f247dbeae4fe0c5b64687a42e5da075bfd546b0c/Env.js)，感谢！
+
+
 
 ## 免责声明
 
