@@ -94,7 +94,7 @@ function get_cookie() {
             $.setdata(uaValue, uaKey);
         } else {
             console.log($.name + "❗️User-Agent获取失败, 已使用备用UA");
-            $.setdata("Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&deviceId=&clientType=ios&iosType=iphone&clientVersion=6.0.20&HiClVersion=6.0.20&isUpdate=0&osVersion=14.0&osName=iOS&platform=iPhone 7 (A1660/A1779/A1780)&screen=667*375&src=App Store&ip=192.168.1.6&mac=&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_3.3.3&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&jdPayChannelVersion=6.0.20&jdPaySdkVersion=3.00.15.00&jdPayClientName=iOS*#@jdPaySDK*#@)", uaKey)
+            $.setdata("Mozilla/5.0 (iPad; CPU OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&deviceId=CB118EC8-C439-4574-815E-4E2FDD4364ED&clientType=ios&iosType=iphone&clientVersion=6.0.40&HiClVersion=6.0.40&isUpdate=0&osVersion=14.0.1&osName=iOS&platform=iPad8,9&screen=667*375&src=App Store&ip=192.168.1.6&mac=02:00:00:00:00:00&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_3.3.3&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&jdPayChannelVersion=6.0.40&jdPaySdkVersion=3.00.19.00&jdPayClientName=iOS*#@jdPaySDK*#@)", uaKey)
         }
         var cookieM = CookieValue.match(/pwdt_id=[^;]+/)[0].replace("pwdt_id=", "");
         if (!cookieM) {
@@ -122,7 +122,7 @@ function get_cookie() {
 function get_unq(cookie) {
     return new Promise((resolve, reject) => {
         const bt_jdjr = {
-            url: 'https://ms.jr.jd.com/gw/generic/bt/h5/m/getRiseLimitItems',
+            url: 'https://ms.jr.jd.com/gw/generic/bt/h5/m/queryCreditList',
             method: "POST",
             headers: {
                 "Host": "ms.jr.jd.com",
@@ -144,11 +144,17 @@ function get_unq(cookie) {
                 if (resp.status == 200) {
                     var data = JSON.parse(data);
                     if (data.resultCode == 0) {
-                        var uniqueCode = data.resultData.raiseItemList[1].uniqueCode;
-                        var btDesc = data.resultData.raiseItemList[1].raiseDesc;
-                        if (btDesc != "今日福利额度" && btDesc != "\u4eca\u65e5\u798f\u5229\u989d\u5ea6") {
-                            console.log($.name + " 🌀今日已提额, 重复请求无意义");
-                            $.msg($.name, "🌀今日已提额", "重复请求无意义", $.opts);
+                        var uniqueCode = data.resultData.data.raiseItemList[2].uniqueCode;
+                        if (!uniqueCode) {
+                            console.log($.name + " ❌no uniqueCode");
+                            var btDesc = data.resultData.raiseItemList[1].raiseDesc;
+                            if (btDesc != "今日福利额度" && btDesc != "\u4eca\u65e5\u798f\u5229\u989d\u5ea6") {
+                                console.log($.name + " 🌀今日已提额, 重复请求无意义");
+                                $.msg($.name, "🌀今日已提额", "👉重复请求无意义", $.opts);
+                            }
+                            return;
+                        } else {
+                            console.log(uniqueCode);
                         }
                     } else if (data.resultCode == 3) {
                         console.log($.name + " ❌出错啦 " + data.resultMsg);
@@ -189,47 +195,50 @@ function riseBT(uniqueCode, cookie) {
             },
             "body": `reqData=%7B%22clientType%22%3A%22ios%22%2C%22clientVersion%22%3A%2214.0%22%2C%22packageId%22%3A%22${uniqueCode}%22%7D`
         };
-
-        $.post(bt_jdjr, (error, resp, data) => {
-            try {
-                if (resp.status == 200) {
-                    var data = JSON.parse(data);
-                    if (data.resultCode == 0) {
-                        console.log(data);
-                        var changeBalanceAmount = data.resultData.changeBalanceAmount;
-                        var totalBalanceAmount = data.resultData.totalBalanceAmount;
-                        if (changeBalanceAmount == "") {
-                            var mesg = "当前总额度: " + totalBalanceAmount;
-                            if (!totalBalanceAmount) {
-                                console.log($.name + " ⚠️抱歉，您还没有开通白条 " + mesg);
-                                $.msg($.name, "⚠️抱歉，您还没有开通白条", "", $.opts);
+        if (uniqueCode.length == 24) {
+            $.post(bt_jdjr, (error, resp, data) => {
+                try {
+                    if (resp.status == 200) {
+                        var data = JSON.parse(data);
+                        if (data.resultCode == 0) {
+                            console.log(data);
+                            var changeBalanceAmount = data.resultData.changeBalanceAmount;
+                            var totalBalanceAmount = data.resultData.totalBalanceAmount;
+                            if (changeBalanceAmount == "") {
+                                var mesg = "当前总额度: " + totalBalanceAmount;
+                                if (!totalBalanceAmount) {
+                                    console.log($.name + " ⚠️抱歉，您还没有开通白条 " + mesg);
+                                    $.msg($.name, "⚠️抱歉，您还没有开通白条", "", $.opts);
+                                } else {
+                                    console.log($.name + " 🎉提额成功 " + mesg);
+                                    $.msg($.name, "🎉提额成功", mesg, $.opts);
+                                }
                             } else {
+                                var SumBalanceAmount = parseInt(changeBalanceAmount) + totalBalanceAmount;
+                                var mesg = "当前总额度: " + SumBalanceAmount + "\n今日提升额度: " + changeBalanceAmount;
                                 console.log($.name + " 🎉提额成功 " + mesg);
                                 $.msg($.name, "🎉提额成功", mesg, $.opts);
                             }
+                        } else if (data.resultCode == 3) {
+                            console.log($.name + " ❌出错啦 " + data.resultMsg);
+                            $.msg($.name, "❌出错啦", "❗请进入[京东金融App]白条页面, 获取Cookie.", $.opts);
                         } else {
-                            var SumBalanceAmount = parseInt(changeBalanceAmount) + totalBalanceAmount;
-                            var mesg = "当前总额度: " + SumBalanceAmount + "\n今日提升额度: " + changeBalanceAmount;
-                            console.log($.name + " 🎉提额成功 " + mesg);
-                            $.msg($.name, "🎉提额成功", mesg, $.opts);
+                            console.log($.name + " ❌出错啦 " + data.resultMsg);
+                            $.msg($.name, "❌出错啦", data.resultMsg, $.opts);
                         }
-                    } else if (data.resultCode == 3) {
-                        console.log($.name + " ❌出错啦 " + data.resultMsg);
-                        $.msg($.name, "❌出错啦", "❗请进入[京东金融App]白条页面, 获取Cookie.", $.opts);
                     } else {
-                        console.log($.name + " ❌出错啦 " + data.resultMsg);
-                        $.msg($.name, "❌出错啦", data.resultMsg, $.opts);
+                        console.log($.name + " ❌访问失败, 请稍后再试 " + resp.status);
+                        $.msg($.name, "❌访问失败, 请稍后再试", "", $.opts);
                     }
-                } else {
-                    console.log($.name + " ❌访问失败, 请稍后再试 " + resp.status);
-                    $.msg($.name, "❌访问失败, 请稍后再试", "", $.opts);
+                } catch (error) {
+                    console.log($.name + " ❌提额失败. " + error);
+                    $.msg($.name, "❗请进入[京东金融App]白条页面, 获取Cookie.", error, $.opts);
                 }
-            } catch (error) {
-                console.log($.name + " ❌提额失败. " + error);
-                $.msg($.name, "❗请进入[京东金融App]白条页面, 获取Cookie.", error, $.opts);
-            }
-            resolve();
-        })
+                resolve();
+            })
+        } else {
+            return;
+        }
     })
 }
 
