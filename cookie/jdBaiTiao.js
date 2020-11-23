@@ -52,8 +52,8 @@ cron "20 15 * * *" script-path=https://raw.githubusercontent.com/cyubuchen/scrip
 const $ = Env("💰京东白条");
 
 $.opts = {
-    'open-url': 'https://m.jr.jd.com/udownload/index.html',
-    'media-url': 'https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/62/19/79/6219790f-e31e-c348-0e8e-a70d9f9748e3/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-85-220.png/460x0w.png'
+    "open-url": "https://m.jr.jd.com/udownload/index.html",
+    "media-url": "https://is5-ssl.mzstatic.com/image/thumb/Purple124/v4/62/19/79/6219790f-e31e-c348-0e8e-a70d9f9748e3/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-85-220.png/460x0w.png"
 };
 
 if (typeof $request != "undefined") {
@@ -61,16 +61,16 @@ if (typeof $request != "undefined") {
     $.done();
 } else {
     var cookies = [];
-    cookies.push($.getdata('cookie_jdjr'));
-    cookies.push($.getdata('cookie_jdjr_'));
+    cookies.push($.getdata("cookie_jdjr"));
+    cookies.push($.getdata("cookie_jdjr_"));
     !(async () => {
         if (cookies[0] == null && cookies[1] == null) {
-            $.msg($.name, '⚠️当前缺少Cookie', '👉请打开[京东金融App]的白条页面, 以自动获取Cookie.', $.opts);
+            $.msg($.name, "⚠️当前缺少Cookie", "👉请打开[京东金融App]的白条页面, 以自动获取Cookie.", $.opts);
         } else {
             for (let i = 0; i < cookies.length; i++) {
                 cookie = cookies[i];
-                if (cookie != null) {
-                    console.log("👉当前账号 " + cookie.match(/pwdt_id=[^;]+/)[0].replace("pwdt_id=", ""));
+                if (cookie != null && cookie != "") {
+                    console.log("👉当前账号 " + cookie.match(/pt_pin=[^;]+/)[0].replace("pt_pin=", ""));
                     var unq = await get_unq(cookie);
                     await riseBT(unq, cookie);
                 } else {
@@ -87,21 +87,11 @@ function get_cookie() {
     try {
         var CookieKey = "cookie_jdjr";
         var CookieKey_ = "cookie_jdjr_";
-        var CookieValue = $request.headers['Cookie'];
-        var uaKey = "ua_jdjr";
-        var uaValue = $request.headers['User-Agent'];
-        if (uaValue.indexOf("jdPayClientName") != -1) {
-            $.setdata(uaValue, uaKey);
-        } else {
-            console.log($.name + "❗️User-Agent获取失败, 已使用备用UA");
-            $.setdata("Mozilla/5.0 (iPad; CPU OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&deviceId=CB118EC8-C439-4574-815E-4E2FDD4364ED&clientType=ios&iosType=iphone&clientVersion=6.0.40&HiClVersion=6.0.40&isUpdate=0&osVersion=14.0.1&osName=iOS&platform=iPad8,9&screen=667*375&src=App Store&ip=192.168.1.6&mac=02:00:00:00:00:00&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_3.3.3&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&jdPayChannelVersion=6.0.40&jdPaySdkVersion=3.00.19.00&jdPayClientName=iOS*#@jdPaySDK*#@)", uaKey)
-        }
-        var cookieM = CookieValue.match(/pwdt_id=[^;]+/)[0].replace("pwdt_id=", "");
-        if (!cookieM) {
-            console.log($.name + " 🍪Cookie获取失败 ❌ " + "CookieValue:\n" + CookieValue);
-            $.msg($.name, "🍪Cookie获取失败 ❌", "", $.opts)
-        } else {
-            if ($.getdata(CookieKey) != null) {
+        var CookieV = $request.headers["Cookie"];
+        if (CookieV.match(/pt_key=[^;]+;/) && CookieV.match(/pt_pin=[^;]+;/)) {
+            var CookieValue = CookieV.match(/pt_key=[^;]+;/)[0] + CookieV.match(/pt_pin=[^;]+;/)[0];
+            var cookieM = CookieValue.match(/pt_pin=[^;]+/)[0];
+            if ($.getdata(CookieKey) != null && $.getdata(CookieKey) != "") {
                 if ($.getdata(CookieKey).indexOf(cookieM) != -1) {
                     $.setdata(CookieValue, CookieKey);
                 } else {
@@ -112,17 +102,29 @@ function get_cookie() {
             }
             console.log($.name + " 🍪Cookie写入成功 🎉 " + cookieM);
             $.msg($.name, "🍪Cookie写入成功 🎉", "", $.opts);
+        } else {
+            console.log($.name + " 🍪Cookie获取失败 ❌ " + "CookieV:\n" + CookieV);
+            $.msg($.name, "🍪Cookie获取失败 ❌", "", $.opts);
+        }
+        var uaKey = "ua_jdjr";
+        var uaValue = $request.headers["User-Agent"];
+        if (uaValue.indexOf("jdPayClientName") != -1) {
+            $.setdata(uaValue, uaKey);
+            console.log($.name + " User-Agent写入成功 🎉");
+        } else {
+            console.log($.name + "👉请重新打开京东金融App的白条页面\n❌User-Agent获取失败");
+            $.msg($.name, "❌写入User-Agent失败", "👉请重新打开京东金融App的白条页面以获取User-Agent", $.opts);
         }
     } catch (error) {
         console.log($.name + " " + error);
-        $.msg($.name, "❓写入Cookie失败", error, $.opts)
+        $.msg($.name, "❌写入Cookie失败", error, $.opts);
     }
 }
 
 function get_unq(cookie) {
     return new Promise((resolve, reject) => {
         const bt_jdjr = {
-            url: 'https://ms.jr.jd.com/gw/generic/bt/h5/m/queryCreditList',
+            url: "https://ms.jr.jd.com/gw/generic/bt/h5/m/queryCreditList",
             method: "POST",
             headers: {
                 "Host": "ms.jr.jd.com",
@@ -134,31 +136,21 @@ function get_unq(cookie) {
                 "Accept": "*/*",
                 "User-Agent": $.getdata("ua_jdjr"),
                 "Referer": "https://mbt.jd.com/process/quota/manage/pages/home.html?channelName=00004&jrcontainer=h5&jrcloseweb=false",
-                "Accept-Language": "zh-cn",
+                "Accept-Language": "zh-cn"
             },
             "body": "reqData=%7B%22clientType%22:%22ios%22,%22clientVersion%22:%2214.0%22,%22eid%22:%22%22,%22fp%22:%22%22,%22riskDeviceInfo%22:%7B%22macAddress%22:%22%22,%22channelInfo%22:%22appstore%22,%22IPAddress1%22:%22%22,%22OpenUDID%22:%22%22,%22clientVersion%22:%226.0.20%22,%22terminalType%22:%2202%22,%22osVersion%22:%2214.0%22,%22appId%22:%22com.jd.jinrong%22,%22deviceType%22:%22iPhone9,1%22,%22networkType%22:%22WIFI%22,%22startNo%22:0,%22UUID%22:%22%22,%22IPAddress%22:%22%22,%22deviceId%22:%22%22,%22IDFA%22:%22%22,%22resolution%22:%22750*1334%22,%22osPlatform%22:%22iOS%22%7D%7D"
         };
-
         $.post(bt_jdjr, (error, resp, data) => {
             try {
                 if (resp.status == 200) {
                     var data = JSON.parse(data);
                     if (data.resultCode == 0) {
-                        var uniqueCode = data.resultData.data.raiseItemList[2].uniqueCode;
-                        if (!uniqueCode) {
-                            console.log($.name + " ❌no uniqueCode");
-                            var btDesc = data.resultData.raiseItemList[1].raiseDesc;
-                            if (btDesc != "今日福利额度" && btDesc != "\u4eca\u65e5\u798f\u5229\u989d\u5ea6") {
-                                console.log($.name + " 🌀今日已提额, 重复请求无意义");
-                                $.msg($.name, "🌀今日已提额", "👉重复请求无意义", $.opts);
-                            }
-                            return;
+                        var uniqueC = data.resultData.data.raiseItemList;
+                        if (uniqueC.length != 0) {
+                            var uniqueCode = uniqueC[2].uniqueCode;
                         } else {
-                            console.log(uniqueCode);
+                            var uniqueCode = "";
                         }
-                    } else if (data.resultCode == 3) {
-                        console.log($.name + " ❌出错啦 " + data.resultMsg);
-                        $.msg($.name, "❌出错啦", "❗请进入[京东金融App]白条页面, 获取Cookie.", $.opts);
                     } else {
                         console.log($.name + " ❌未知错误 " + data.resultMsg);
                         $.msg($.name, "❌未知错误", data.resultMsg, $.opts);
@@ -168,8 +160,8 @@ function get_unq(cookie) {
                     $.msg($.name, "❌访问失败, 请稍后再试", "", $.opts);
                 }
             } catch (error) {
-                console.log($.name + " ❌访问失败! " + data.resultData.error_msg + "\n" + error);
-                $.msg($.name, "❌访问失败.", data.resultData.error_msg, $.opts);
+                console.log($.name + " ❌访问失败! " + error);
+                $.msg($.name, "❌访问失败!", "", $.opts);
             }
             resolve(uniqueCode);
         })
@@ -179,7 +171,7 @@ function get_unq(cookie) {
 function riseBT(uniqueCode, cookie) {
     return new Promise((resolve, reject) => {
         const bt_jdjr = {
-            url: 'https://ms.jr.jd.com/gw/generic/bt/h5/m/receiveDailyQuotaPackage',
+            url: "https://ms.jr.jd.com/gw/generic/bt/h5/m/receiveDailyQuotaPackage",
             method: "POST",
             headers: {
                 "Host": "ms.jr.jd.com",
@@ -191,11 +183,14 @@ function riseBT(uniqueCode, cookie) {
                 "Accept": "*/*",
                 "User-Agent": $.getdata("ua_jdjr"),
                 "Referer": "https://mbt.jd.com/process/quota/manage/pages/home.html?channelName=00004&jrcontainer=h5&jrcloseweb=false",
-                "Accept-Language": "zh-cn",
+                "Accept-Language": "zh-cn"
             },
             "body": `reqData=%7B%22clientType%22%3A%22ios%22%2C%22clientVersion%22%3A%2214.0%22%2C%22packageId%22%3A%22${uniqueCode}%22%7D`
         };
-        if (uniqueCode.length == 24) {
+        if (uniqueCode == "") {
+            console.log($.name + " 未开通白条条");
+            $.msg($.name, "未开通白条", "", $.opts);
+        } else if (uniqueCode.length == 24) {
             $.post(bt_jdjr, (error, resp, data) => {
                 try {
                     if (resp.status == 200) {
@@ -219,12 +214,9 @@ function riseBT(uniqueCode, cookie) {
                                 console.log($.name + " 🎉提额成功 " + mesg);
                                 $.msg($.name, "🎉提额成功", mesg, $.opts);
                             }
-                        } else if (data.resultCode == 3) {
-                            console.log($.name + " ❌出错啦 " + data.resultMsg);
-                            $.msg($.name, "❌出错啦", "❗请进入[京东金融App]白条页面, 获取Cookie.", $.opts);
                         } else {
-                            console.log($.name + " ❌出错啦 " + data.resultMsg);
-                            $.msg($.name, "❌出错啦", data.resultMsg, $.opts);
+                            console.log($.name + " ❌出错啦 " + data.resultData);
+                            $.msg($.name, "❌出错啦", data.resultData.result.error_msg, $.opts);
                         }
                     } else {
                         console.log($.name + " ❌访问失败, 请稍后再试 " + resp.status);
@@ -232,7 +224,7 @@ function riseBT(uniqueCode, cookie) {
                     }
                 } catch (error) {
                     console.log($.name + " ❌提额失败. " + error);
-                    $.msg($.name, "❗请进入[京东金融App]白条页面, 获取Cookie.", error, $.opts);
+                    $.msg($.name, "❗请打开[京东金融App]白条页面", error, $.opts);
                 }
                 resolve();
             })
@@ -241,6 +233,7 @@ function riseBT(uniqueCode, cookie) {
         }
     })
 }
+
 
 function Env(name, opts) {
     class Http {

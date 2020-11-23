@@ -16,44 +16,45 @@
 饭饭文学定时签到
 
 使用说明:
-获取Cookie: 登录饭饭文学 -> 访问该签到页面https://bbs.fanfann.com/hack.php?H_name=xqqiandao -> 自动弹出通知 "Cookie获取成功 "
+获取Cookie: 登录饭饭文学 -> 访问该签到页面https://bbs.fanfanf.com/hack.php?H_name=xqqiandao -> 自动弹出通知 "Cookie获取成功 "
 
 [MITM]
-hostname=bbs.fanfann.com
+hostname=bbs.fanfanf.com
 
 ####################
-# Surge
+# Surge iOS
 [Script]
-# 饭饭小说签到 for iOS
-
-FanfanNovels_foriOS.js = type=cron,cronexp=20 20 * * *,script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/task/FanfanNovels_foriOS.js
-
-Fanfann_Cookie.js = type=http-request,pattern=^https:\/\/bbs\.fanfann\.com\/hack\.php\?H_name=xqqiandao,script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/FanfanNovels_foriOS.js
+# 饭饭小说签到
+fanfanfCheckin = type=cron,cronexp=20 20 * * *,script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/task/fanfannovels.js
+fanfanfCookie = type=http-request,pattern=^https:\/\/bbs\.fanfanf\.com\/hack\.php\?H_name=xqqiandao,script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/fanfannovels.js
 ####################
 
 ####################
-# Quantumult X商店版
-复制本脚本内容至本地,并取名为FanfanNovels_foriOS
+# Loon
+[Script]
+http-request ^https:\/\/bbs\.fanfanf\.com\/hack\.php\?H_name=xqqiandao script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/fanfannovels.js, tag=fanfanfCookie
+cron "20 20 * * *" script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/task/fanfannovels.js,tag=fanfanfCheckin
+####################
+
+####################
+# Quantumult X 商店版
+# 复制一份本脚本至本地, 文件名设为fanfannovels
 [rewrite_local]
-# 饭饭小说
-^https?:\/\/bbs\.fanfann\.com\/hack\.php\?H_name=xqqiandao url script-request-header FanfanNovels_foriOS.js
+;饭饭小说
+^https:\/\/bbs\.fanfanf\.com\/hack\.php\?H_name=xqqiandao url script-request-header fanfannovels.js
 [task_local]
-20 20 * * * FanfanNovels_foriOS.js, enabled=true
+20 20 * * * fanfannovels.js, enabled=true
 ####################
 
-####################
-# Quantumult X TestFlight版 - 未测试, 因无Testflight版
-# 饭饭小说
-^https?:\/\/bbs\.fanfann\.com\/hack\.php\?H_name=xqqiandao url script-request-header https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/FanfanNovels_foriOS.js
-
-20 20 * * * https://raw.githubusercontent.com/cyubuchen/scripts/master/task/FanfanNovels_foriOS.js, enabled=true
-####################
 
 */
 
 const $ = Env("🍚饭饭小说");
 
-$.opts = { 'open-url': 'https://bbs.fanfann.com/hack.php?H_name=xqqiandao', 'media-url': 'https://bbs.fanfann.com/images/link240921v1/logo.png'};
+$.opts = {
+    'open-url': 'https://bbs.fanfanf.com/hack.php?H_name=xqqiandao',
+    'media-url': 'https://bbs.fanfanf.com/images/link240921v1/logo.png'
+};
 
 
 if (typeof $request != "undefined") {
@@ -69,14 +70,23 @@ if (typeof $request != "undefined") {
 
 function get_cookie() {
     try {
-        var CookieKey = "cookie_fanfann";
-        var CookieValue = $request.headers['Cookie'];
+        var CookieKey = "cookie_fanfanf";
+        var CookieValue = $request.headers["Cookie"];
+        var uaKey = "ua_fanfanf";
+        var uaValue = $request.headers["User-Agent"];
+        var ua_fanfanf = $.setdata(uaValue, uaKey);
+        if ($.getdata("ua_fanfanf").indexOf("Mozilla") != -1) {
+            console.log($.name + " ⭐️User-Agent获取成功");
+        } else {
+            console.log($.name + " ⭐️User-Agent获取失败, 启用备用UA");
+            $.setdata("Mozilla/5.0 (iPad; CPU OS 14_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1", uaKey);
+        }
         if ($.getdata(CookieKey)) {
             if ($.getdata(CookieKey) != CookieValue) {
                 var cookie = $.setdata(CookieValue, CookieKey);
                 if (cookie) {
                     $.msg($.name, "🍪Cookie更新成功 🎉", "", $.opts);
-                    console.log($.name + " 🍪Cookie更新成功 🎉\n" + CookieValue);
+                    console.log($.name + " 🍪Cookie更新成功 🎉");
                 } else {
                     $.msg($.name, "🍪Cookie更新失败 ❌", "", $.opts);
                     console.log($.name + " 🍪Cookie更新失败 ❌");
@@ -88,7 +98,7 @@ function get_cookie() {
             var cookie = $.setdata(CookieValue, CookieKey);
             if (cookie) {
                 $.msg($.name, "🍪Cookie首次写入成功 🎉", "", $.opts)
-                console.log($.name + " 🍪饭饭小说Cookie:\n" + CookieValue);
+                console.log($.name + " 🍪Cookie首次写入成功 🎉");
             } else {
                 $.msg($.name, "🍪Cookie首次写入失败 ❌", "", $.opts)
                 console.log($.name + " 🍪Cookie首次写入失败 ❌");
@@ -103,31 +113,31 @@ function get_cookie() {
 
 function check_in() {
     return new Promise((resolve, reject) => {
-        const fanfann = {
-            url: 'https://bbs.fanfann.com/hack.php?H_name=xqqiandao',
+        const fanfanf = {
+            url: 'https://bbs.fanfanf.com/hack.php?H_name=xqqiandao',
             method: "POST",
             headers: {
-                Cookie: $.getdata("cookie_fanfann"),
+                "Cookie": $.getdata("cookie_fanfanf"),
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Accept-Language": "zh-cn",
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Host": "bbs.fanfann.com",
-                "Origin": "https://bbs.fanfann.com",
-                "Referer": "https://bbs.fanfann.com/hack.php?H_name=xqqiandao",
-                // "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15"
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Mobile/15E148 Safari/604.1"
+                "Host": "bbs.fanfanf.com",
+                "Origin": "https://bbs.fanfanf.com",
+                "Referer": "https://bbs.fanfanf.com/hack.php?H_name=xqqiandao",
+                "User-Agent": $.getdata("ua_fanfanf")
             },
             body: 'action=qiandao&qdxq=1&setqdbkid=202'
         };
 
-        $.post(fanfann, (error, resp, data) => {
+        $.post(fanfanf, (error, resp, data) => {
             try {
                 if (resp.status == 200) {
                     if (data == null) {
                         $.msg($.name, "🌝出错啦", "❓❗❓❗❓❗", $.opts);
                     } else {
                         if (data.indexOf("regIgnore") != -1 || data.indexOf('"modify"') != -1) {
+                            // let mesg = data.match(/(?<=<b>)\d+/)[0]
                             var mesg = data.match(/<b>\d+<\/b>/)[0].replace(/<\/?b>/g, "");
                             $.msg($.name, "🌀重复签到", "每天最多允许签到" + mesg + "次", $.opts);
                             console.log($.name + " 🌀重复签到, 每天最多允许签到" + mesg + "次");
@@ -480,7 +490,7 @@ function Env(name, opts) {
                         } catch (e) {
                             this.logErr(e)
                         }
-                        // this.ckjar.setCookieSync(resp.headers['set-cookie'].map(Cookie.parse).toString())
+                        this.ckjar.setCookieSync(resp.headers['set-cookie'].map(Cookie.parse).toString())
                     })
                     .then(
                         (resp) => {

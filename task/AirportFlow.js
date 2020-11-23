@@ -1,6 +1,5 @@
 /*
 感谢 @chavyleung
-
 ####################
 [免责声明]
 1、此脚本仅用于学习研究，不保证其合法性、准确性、有效性，请根据情况自行判断，本人对此不承担任何保证责任。
@@ -11,94 +10,48 @@
 6、如果任何单位或个人认为此脚本可能涉嫌侵犯其权利，应及时通知并提供身份证明，所有权证明，我们将在收到认证文件确认后删除此脚本。
 7、所有直接或间接使用、查看此脚本的人均应该仔细阅读此声明。本人保留随时更改或补充此声明的权利。一旦您使用或复制了此脚本，即视为您已接受此免责声明。
 ####################
-
 功能:
 自动登录并查询机场Miaona!剩余流量.其他的机场并不适用!其他的机场并不适用!其他的机场并不适用!
-
 使用说明:
 复制本脚本至本地, 取名为AirportFlow, 填写email和pwd的值为你的账号密码, 以及相关配置.
-
 注意:
 务必保存在本地使用,不要使用该远程文件!!!
 (原因: 
     1. 本脚本要求填写你的账号密码, 以实现自动登录查询, 故不可公开; 
     2. 本脚本默认账号密码仅为示例, 非真实账号, 直接运行无法查询到任何剩余流量.)
-
 相关配置:
-
 [MITM]
 hotsname = 自行添加Miaona!的官网(9个字母+1个点的),此处不直接公开
 
-Loon
-[Script]
-cron "0 7 * * *" script-path=AirportFlow.js, tag=AirportFlow.js
-
 Sruge
 [Script]
-AirportFlow.js = type=cron,cronexp=0 7 * * *,script-path=AirportFlow.js
+AirportFlow = type=cron,cronexp=0 7 * * *,script-path=AirportFlow.js
+
+Loon
+[Script]
+cron "0 7 * * *" script-path=AirportFlow.js, tag=AirportFlow
 
 QuantumultX
 [task_local]
 0 7 * * * AirportFlow.js, enabled=true
 */
 
-// 登录账号 引号内替换为登录账号 改yourEmail@example.com
-const email = "yourEmail@example.com";
-
-// 登录密码 引号内替换为登录密码 改yourPassword
-const pwd = "yourPassword";
-
-
-const $ = new Env("🐱for Miaona!");
-
-
-$.opts = {
-        'open-url': 'https://t.me/miaona233',
-        'media-url': 'https://i.pinimg.com/originals/e1/47/cc/e147cc317028e935119b3039a488348a.jpg'
-    }
+const $ = new Env("机场🐱");
+const date = new Date();
+// 登录账号 引号内替换为登录账号 "example@email.com"
+const email = "example@email.com";
+// 登录密码 替换引号内内容 "password"
+const pwd = "password";
 
 
 !(async () => {
-    const tt = await getToken();
-    const ttt = await log_in(tt);
-    await get_flow(tt);
+    await log_in();
+    await get_flow();
 })()
 .catch((e) => $.logErr(e)).finally(() => $.done());
 
 
-function getToken() {
-    return new Promise((resolve, reject) => {
-        const miao = {
-            url: "https://miaona.xyz/#/login",
-            method: "GET",
-            headers: {
-                "Host": "miaona.xyz",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Accept-Language": "zh-cn",
-                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Mobile/15E148 Safari/604.1",
-            }
-        };
-        $.get(miao, (error, resp, data) => {
-            try {
-                var miaoCookie = resp.headers["Set-Cookie"];
-                var miaoToken = miaoCookie.match(/XSRF-TOKEN=.+?;/g)[0].replace(";", "");
-                var xxsrf_token = miaoToken.replace("XSRF-TOKEN=", "").replace(/%3D/g, "=");
-                var miaoSession = miaoCookie.match(/miaona_session=.+?;/g)[0].replace(";", "");
-                var miaoSessionM = miaoSession.replace("miaona_session=", "").replace(/%3D/g, "=");
-                Cookie = "XSRF-TOKEN=" + xxsrf_token.replace(/=/g, "%3D") + "; miaona_session=" + miaoSessionM.replace(/=/g, "%3D") + "; isLogin=1;";
-                var rh = [miaoCookie, miaoToken, xxsrf_token, miaoSession, miaoSessionM, Cookie];
-            } catch (error) {
-                console.log(error);
-                $.msg("Miao请求失败", "", error, "");
-            }
-            resolve(rh);
-        })
-    })
-}
-
-
-function log_in(miaoCookie) {
+function log_in() {
     return new Promise((resolve, reject) => {
         const logIN = {
             url: "https://miaona.xyz/api/v1/passport/auth/login",
@@ -107,14 +60,12 @@ function log_in(miaoCookie) {
                 "Host": "miaona.xyz",
                 "Accept": "application/json, text/plain, */*",
                 "Accept-Encoding": "gzip, deflate, br",
-                "X-XSRF-TOKEN": miaoCookie[2],
                 "Accept-Language": "zh-cn",
                 "Content-Type": "application/json;charset=UTF-8",
                 "Origin": "https://miaona.xyz",
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Mobile/15E148 Safari/604.1",
                 // "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
                 "Referer": "https://miaona.xyz/",
-                "Cookie": miaoCookie[5]
             },
             body: `{"email":"${email}","password":"${pwd}"}`
         };
@@ -134,15 +85,13 @@ function log_in(miaoCookie) {
 }
 
 
-function get_flow(miaoCookie) {
+function get_flow() {
     return new Promise((resolve, reject) => {
         const getSub = {
             url: "https://miaona.xyz/api/v1/user/getSubscribe",
             headers: {
                 "Host": "miaona.xyz",
-                "Cookie": miaoCookie[5],
                 "Accept": "application/json, text/plain, */*",
-                "X-XSRF-TOKEN": miaoCookie[2],
                 "Accept-Language": "zh-cn",
                 "Referer": "https://miaona.xyz/",
                 "Accept-Encoding": "gzip, deflate, br",
@@ -153,21 +102,12 @@ function get_flow(miaoCookie) {
             try {
                 if (resp.status == 200) {
                     var data = JSON.parse(data);
-                    if (data.data.expired_at != null) {
-                        var expired_at = data.data.expired_at * 1000;
-                        var dt = new Date(expired_at).toLocaleDateString("en-US")
-                        var tm = new Date(expired_at).toLocaleTimeString("en-US")
-                        var expired_time = "🎉 套餐到期时间: " + dt + " " + tm;
-                        console.log(expired_time);
-                    } else {
-                        var expired_time = "";
-                    }
                     var t = data.data.transfer_enable - data.data.d + data.data.u;
                     var flow = t > 1073741824 ? (t / 1024 / 1024 / 1024).toFixed(2) + " GB" : t > 1048576 ? (t / 1024 / 1024).toFixed(2) + " MB" : (t / 1024 / 1024).toFixed(2) + " KB";
-                    console.log("机场🐱剩余流量: " + flow + "\n" + expired_time);
-                    $.subt = "🌊 剩余流量: " + flow;
-                    $.desc = expired_time;
-                    $.msg($.name, $.subt, $.desc, $.opts);
+                    console.log(date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + "\n机场🐱剩余流量: " + flow);
+                    $.subt = date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear();
+                    $.desc = "🌊剩余流量: " + flow;
+                    $.msg($.name, $.subt, $.desc, {'open-url': 'https://miaona.xyz/', 'media-url': 'https://st2.depositphotos.com/5698376/8414/v/450/depositphotos_84142870-stock-illustration-muzzle-of-a-cat-in.jpg'});
                 }
             } catch (error) {
                 console.log("剩余流量获取失败");

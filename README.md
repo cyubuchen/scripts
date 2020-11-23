@@ -9,9 +9,7 @@
 * [bilibili领硬币（支持双账号）](https://github.com/cyubuchen/scripts/blob/master/task/bilibiliCoins.js)
 * [京东白条提额（支持双账号）](https://github.com/cyubuchen/scripts/blob/master/task/jdBaiTiao.js)
 * [某机场流量查询](https://github.com/cyubuchen/scripts/blob/master/task/AirportFlow.js)
-* 饭饭文学签到领金币
-	* [饭饭文学-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js)
-	* [饭饭文学-Mac](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_forMac.js)
+* [饭饭文学签到-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js)
 * [恩山论坛签到](https://github.com/cyubuchen/scripts/blob/master/task/enshanCheckin.js)
 
 |                             脚本                             |            功能             |                             预览                             |            是否支持 Loon / Quantumult X / Surge            |
@@ -21,7 +19,6 @@
 | [京东白条提额(支持双账号)](https://github.com/cyubuchen/scripts/blob/master/task/jdBaiTiao.js) | 每日自动提额（京东金融App） | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/jdBaiTiao.JPEG"/></div> |            支持 Loon, Quantumult X, Surge            |
 | [某机场流量查询](https://github.com/cyubuchen/scripts/blob/master/task/AirportFlow.js) |  自动登录查询机场剩余流量   | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/airportFlow.JPEG"/></div> |            支持 Loon, Quantumult X, Surge            |
 | [饭饭文学-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js) |      自动签到获取金币       | <div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovels.jpg"/></div><div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsQX.jpg"/></div> |            支持 Quantumult X, Surge for iOS            |
-| [饭饭文学-Mac](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_forMac.js) |      自动签到获取金币       | <div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsMac.png"/></div> |            支持 Surge for Mac            |
 | [恩山论坛签到](https://github.com/cyubuchen/scripts/blob/master/task/enshanCheckin.js) |      自动签到获取金币       | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/enshanCheckin.jpg"/></div> |            支持 Loon, Quantumult X, Surge            |
 
 ## 致谢
