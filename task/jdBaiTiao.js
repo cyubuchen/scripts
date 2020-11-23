@@ -18,7 +18,7 @@
 如何获取京东金融Cookie
 1. 打开京东金融App -> 我的 -> 白条额度
 2. Cookie获取成功的通知将自动弹出
-3. 注意: 进入[白条]页面以自动获取Cookie, 有小鸭子的白条页面
+3. 注意: 进入[白条额度]页面以自动获取Cookie, 有提升额度选项的页面
 
 [MITM]
 hostname=*.jr.jd.com
@@ -26,7 +26,7 @@ hostname=*.jr.jd.com
 ####################
 # Loon
 [Script]
-http-request ^https:\/\/ms\.jr\.jd\.com\/gw\/generic\/bt\/h5\/m\/firstScreenNew script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/jdBaiTiao.js, timeout=10, tag=京东白条Cookie
+http-request ^https:\/\/ms\.jr\.jd\.com\/gw\/generic\/bt\/h5\/m\/queryCreditManage script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/jdBaiTiao.js, timeout=10, tag=京东白条Cookie
 cron "20 15 * * *" script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/task/jdBaiTiao.js,tag=京东白条提额
 ####################
 
@@ -34,7 +34,7 @@ cron "20 15 * * *" script-path=https://raw.githubusercontent.com/cyubuchen/scrip
 # Surge
 [Script]
 # 京东白条提额
-京东白条Cookie = type=http-request,pattern=^https:\/\/ms\.jr\.jd\.com\/gw\/generic\/bt\/h5\/m\/firstScreenNew,script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/jdBaiTiao.js
+京东白条Cookie = type=http-request,pattern=^https:\/\/ms\.jr\.jd\.com\/gw\/generic\/bt\/h5\/m\/queryCreditManage,script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/cookie/jdBaiTiao.js
 京东白条提额 = type=cron,cronexp="20 15 * * *",script-path=https://raw.githubusercontent.com/cyubuchen/scripts/master/task/jdBaiTiao.js
 ####################
 
@@ -43,7 +43,7 @@ cron "20 15 * * *" script-path=https://raw.githubusercontent.com/cyubuchen/scrip
 # 复制一份本脚本至本地, 文件名设为jdBaiTiao
 [rewrite_local]
 ;京东白条Cookie
-^https:\/\/ms\.jr\.jd\.com\/gw\/generic\/bt\/h5\/m\/firstScreenNew url script-request-header jdBaiTiao.js
+^https:\/\/ms\.jr\.jd\.com\/gw\/generic\/bt\/h5\/m\/queryCreditManage url script-request-header jdBaiTiao.js
 [task_local]
 20 15 * * * jdBaiTiao.js, enabled=true
 ####################
@@ -144,10 +144,22 @@ function get_unq(cookie) {
             try {
                 if (resp.status == 200) {
                     var data = JSON.parse(data);
+                    var isJx = 0;
                     if (data.resultCode == 0) {
                         var uniqueC = data.resultData.data.raiseItemList;
                         if (uniqueC.length != 0) {
-                            var uniqueCode = uniqueC[2].uniqueCode;
+                            for (let i = 0; i < uniqueC.length; i++) {
+                                if (uniqueC[i].raiseDesc == "京喜提额") {
+                                    var isJx = 1;
+                                }
+                            }
+                            if (isJx == 1) {
+                                var uniqueCode = uniqueC[3].uniqueCode;
+                                console.log($.name + " 🎉京喜提额, 请前往京东金融查看");
+                                $.msg($.name, "🎉当前有京喜提额", "请前往京东金融查看", $.opts);
+                            } else {
+                                var uniqueCode = uniqueC[2].uniqueCode;
+                            }
                         } else {
                             var uniqueCode = "";
                         }
@@ -188,8 +200,8 @@ function riseBT(uniqueCode, cookie) {
             "body": `reqData=%7B%22clientType%22%3A%22ios%22%2C%22clientVersion%22%3A%2214.0%22%2C%22packageId%22%3A%22${uniqueCode}%22%7D`
         };
         if (uniqueCode == "") {
-            console.log($.name + " 未开通白条条");
-            $.msg($.name, "未开通白条", "", $.opts);
+            console.log($.name + " ❗️未开通白条条");
+            $.msg($.name, "❗️未开通白条", "", $.opts);
         } else if (uniqueCode.length == 24) {
             $.post(bt_jdjr, (error, resp, data) => {
                 try {
