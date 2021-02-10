@@ -11,6 +11,8 @@
 * [某机场流量查询](https://github.com/cyubuchen/scripts/blob/master/task/AirportFlow.js)
 * [饭饭文学签到-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js)
 * [恩山论坛签到](https://github.com/cyubuchen/scripts/blob/master/task/enshanCheckin.js)
+* [今日车辆限行规则](https://github.com/cyubuchen/scripts/blob/master/task/今日车辆限行规则.js)
+
 
 |                             脚本                             |            功能             |                             预览                             |            是否支持 Loon / Quantumult X / Surge            |
 | :----------------------------------------------------------: | :-------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
@@ -20,6 +22,7 @@
 | [某机场流量查询](https://github.com/cyubuchen/scripts/blob/master/task/AirportFlow.js) |  自动登录查询机场剩余流量   | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/airportFlow.JPEG"/></div> |            支持 Loon, Quantumult X, Surge            |
 | [饭饭文学-iOS](https://github.com/cyubuchen/scripts/blob/master/task/FanfanNovels_foriOS.js) |      自动签到获取金币       | <div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovels.jpg"/></div><div align=center><img width="530" height="145" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/fanfanNovelsQX.jpg"/></div> |            支持 Quantumult X, Surge for iOS            |
 | [恩山论坛签到](https://github.com/cyubuchen/scripts/blob/master/task/enshanCheckin.js) |      自动签到获取金币       | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/enshanCheckin.jpg"/></div> |            支持 Loon, Quantumult X, Surge            |
+| [今日车辆限行规则](https://github.com/cyubuchen/scripts/blob/master/task/今日车辆限行规则.js) |      今日车辆限行规则提醒       | <div align=center><img width="530" height="509" src="https://raw.githubusercontent.com/cyubuchen/scripts/master/pics/TailNumberLimited.jpg"/></div> |            支持 Loon, Quantumult X, Surge            |
 
 ## 致谢
 
